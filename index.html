@@ -19,7 +19,7 @@
 <meta property="bf:userid" content="374989" />
 
 <meta name="description" content="Visit Link and send Greetings Free" />
-<meta name="title" content="Proof That European Rave Fashion Is Better Than American Rave Fashion" />
+
 
 
   </head>
@@ -130,22 +130,9 @@ animation: mymove 3s;
 
 
 
-
-
-
-
-
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-
-
-
-<!-- <script src="https://code.jquery.com/jquery-3.5.0.js" integrity="sha256-r/AaFHrszJtwpe+tHyNi/XCfMxYpbsRg2Uqn0x3s2zc=" crossorigin="anonymous"></script> -->
-
-
 
 <audio id="myAudio" autoplay="" loop="">
   <source src="Noor.mp3" type="audio/mp3">
@@ -157,9 +144,6 @@ animation: mymove 3s;
     audi.play();
 })
 </script>
-
-
-
 
 <dir class="sdf" style="overflow:hidden; display: flex;align-items: center;width: 100%;">
   <div class="row" style="width: 100%">
@@ -173,29 +157,17 @@ animation: mymove 3s;
     </dir>
 
 
-
-
   </div>
-
-
-
- 
-
 
 </dir>
 
 
-
-
-
 <script type="text/javascript">
-
 
 function openDoor() { 
   $(".sdf").attr("id","dimScreen"); 
 } 
 
- // $(".sdf").attr("id","dimScreen");
 
 function openNew() { 
  var str = $("#pwd").val();
@@ -204,26 +176,8 @@ window.open("index.html?&"+str,"_self");
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 var parameters = location.search.substring(1);
 if(parameters[0] != "&"){
-  //alert(parameters);
   $("#shareBtn").hide();
   $("#formData").show();
 }else{
@@ -236,36 +190,13 @@ if(parameters[0] != "&"){
  parameters=parameters.replace("&", "");
 document.getElementById("uname").innerHTML=parameters.replace("%20", "   ");
 
-
-
-
-
 function whatsAppShare() { 
-   
 var whatsappLink ="whatsapp://send?text=Click%20to%20receive%20the%20greeting%20from%20your%20well%20wisher%0A%0Ahttps%3A%2F%2Fbuffersoul.github.io/%3F"+parameters;
-  // $("#whatsBtn").attr("href", whatsappLink);
-
   document.getElementById("whatsBtn").href = whatsappLink;
 
-alert(document.getElementById("whatsBtn").href );
 } 
 
-
-
-
-
-
-
-
-
-
-
 </script>
-
-
-
-<!-- <a href="whatsapp://send?text=Proof%20That%20European%20Festival%20Fashion%20Is%20Better%20Than%20American%20Fashion%0A%0Ahttp%3A%2F%2Fwww.buzzfeed.com%2Fazafar%2Fproof-that-european-festival-fashion-is-better-than-american%3Fbfwa" data-action="share/whatsapp/share" data-text="Take a look at this awesome website:" data-href="" class="btn btn-primary mb-2">Share3</a> -->
-
 
   </body>
 </html>
