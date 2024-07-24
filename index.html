@@ -1,210 +1,47 @@
 <!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <link rel="stylesheet" type="text/css" href="style.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <title>Ramzan Mubarak</title>
-<script data-ad-client="ca-pub-5442080700501053" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<html>
 
-<title>Send Greetings to your loved ones on the occasion of happiness.</title>
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no" />
+<head>
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <script type="text/javascript">
+    google.charts.load('current', { 'packages': ['gauge'] });
+    google.charts.setOnLoadCallback(drawChart);
+    let value = 0;
+    function drawChart() {
+      const REFRESH_INTERVAL=120000;
+      var data = google.visualization.arrayToDataTable([['Label', 'Value'], ['', 0]]);
+      var options = {
+        width: 200,
+        height: 200,
+        redFrom: 0,
+        redTo: 25,
+        yellowFrom: 25,
+        yellowTo: 75,
+        greenFrom:75,
+        greenTo:100,
+        majorTicks:["0","10","20","30","40","50","60","70","80","90","100"],
+        minorTicks: 10
+      };
+      var chart = new google.visualization.Gauge(document.getElementById('chart_div'));
+      chart.draw(data, options);
+      setInterval(function () {
+        value++;
+        if (value === 100) value = 0;
+        data.setValue(0, 1, value);
+        chart.draw(data, options);
+      }, REFRESH_INTERVAL);
+    }     
+  </script>
+</head>
 
-    <meta name="referrer" content="unsafe-url" />
-
-<meta property="bf:buzzid" content="3414904" />
-<meta property="bf:userid" content="374989" />
-
-<meta name="description" content="Visit Link and send Greetings Free" />
-
-
-
-  </head>
-
-<style type="text/css">
-  body{
-      background-image: url("mainback.gif");
-    height: 100%; 
-  background-position: center;
-  background-size: cover;
-  }
-
-
-#dimScreen
-{ 
-    
-animation: mymove 3s;
-  animation-fill-mode: forwards;
-
-}
-.sdf{
-  position:fixed;
-    padding:0;
-    margin:0;
-
-    top:0;
-    left:0;
-
-    width: 100%;
-    height: 100%;
-     background-image: url("mmm.gif");
-}
-
-@keyframes mymove {
-  from {height: 100%;}
-  to {height: 0px; background-color: blue;}
-}
-</style>
-  <body>
-<div class="container-fluid">
-  <div class="row justify-content-center">
-    <div class="col-md-4 col-lg-4 col-sm-auto col-12 my-auto">
-      <img src="banner1.gif" style="width: 100%">
-    </div>
+<body>
+  <div style="display: flex;
+  flex-direction: column;
+  align-items: center;">
+    <h3>Water Tank Level</h3>
+  <div id="chart_div" style="width: 200px; height: 200px; ;border: 2px solid black;"></div>
   </div>
-  <div class="row row justify-content-md-center">
-    <div class="col-md-4 col-lg-4 col-sm-auto col-12 ">
-      <img src="ramzangif.gif" style="width: 50%;display:block;margin:auto;margin-top: 12px;">
-    </div>
-  </div>
+  
+</body>
 
-<div class="row justify-content-md-center">
-  <div class="col-md-4 col-lg-4 col-sm-auto col-12 ">
-      <div class="sign" style="margin-top: 40px;">
-
-<span class="fast-flicker" style="padding-right: 10px;">Best </span> 
-<span class="flicker" style="padding-right: 10px;">Wishes </span>
-<span class="fast-flicker" style="padding-right: 10px;">From </span>
-
-    </div>
-  </div>
-</div>
-
-<div class="row justify-content-md-center">
-  <div class="col-md-4 col-lg-4 col-sm-auto col-12 ">
-      <div class="sign2" style="margin-top: 40px;">
-<span class="flicker" id="uname"> ذیشان</span>
-
-    </div>
-  </div>
-</div>
-
-<div class="row justify-content-md-center" style="margin-top: 120px;">
-  <div class="col-md-4 col-lg-4 col-sm-auto col-12 ">
-     <img src="blowname.gif">
-  </div>
-
-</div>
-<!-- <div class="row justify-content-md-center" >
-  <div class="col-md-4 col-lg-4 col-sm-auto col-12 ">
-     <img src="source.gif" style="width: 400px;">
-  </div>
-</div> -->
-
-
-
-<div class="row" style="position:fixed;bottom:0;width:100%;margin-bottom: 5px;" id="formData">
-  <div class="col-md-2 col-lg-2 col-sm-auto col-9 " >
-    <input type="input" class="form-control" id="pwd"  placeholder="Enter Your Name">
-  </div>
-  <div class="col-md-2 col-lg-2 col-sm-auto col-3 " >
-  <button type="submit" class="btn btn-primary mb-2"  onclick="openNew()">Create</button>
-  </div>
-
-
-  </div>
-
-<div class="row" style="position:fixed;bottom:0;width:100%;" id="shareBtn">
-<div class="col-md-4 col-lg-4 col-sm-auto col-12 ">
-  <a id="whatsBtn" onclick="whatsAppShare()" style="margin-left: 2px;width: 100%;" href="" data-action="share/whatsapp/share" data-text="Send Greetings To Your Loved Ones!" data-href="" class="btn btn-primary mb-2"><i class="fa fa-whatsapp fa-lg"  > Send Greetings</i></a>
-
-</div>
-
-</div>
-
-
-</div>
-
-
-
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-
-<audio id="myAudio" autoplay="" loop="">
-  <source src="Noor.mp3" type="audio/mp3">
-</audio>
-
-<script>
-  var audi = document.getElementById("myAudio");
-  document.body.addEventListener("click", function () {
-    audi.play();
-})
-</script>
-
-<div class="container sdf" style="overflow:hidden; display: flex;align-items: center;">
-  <div class="row">
-    <div class="col-md-2 col-lg-2 col-sm-auto col-6 ">
-       <img  src="click.gif"  class="door align-self-center" style="width: 200px;height: 200px;">
-    </div>
-     <dir class="col-md-2 col-lg-2 col-sm-auto col-6 " style="text-align: center;">
-      <img src="gift.gif" onclick="openDoor()" class=" align-self-center" style="width: 150px;height: 150px;">
-    </dir>
-  </div>
-
-<!--    <div class="row" style="margin-top: 500px;">
-    <div class="col-md-4 col-lg-4 col-sm-auto col-6 my-auto">
-      <a href="https://www.hitwebcounter.com" target="_blank">
-        <img src="https://hitwebcounter.com/counter/counter.php?page=7281150&style=0009&nbdigits=5&type=page&initCount=0" title="User Stats" Alt="PHP Hits Count"   border="0" >
-      </a>  
-    </div>
-  </div> -->
-
-
-</div>
-    
-   
-
-
-<script type="text/javascript">
-
-function openDoor() { 
-  $(".sdf").attr("id","dimScreen"); 
-} 
-
-
-function openNew() { 
- var str = $("#pwd").val();
-window.open("index.html?&"+str,"_self");
-} 
-
-
-
-var parameters = location.search.substring(1);
-if(parameters[0] != "&"){
-  $("#shareBtn").hide();
-  $("#formData").show();
-}else{
-
-  $("#formData").hide();
-  $("#shareBtn").show();
-  $(".sdf").hide();
-}
- parameters=parameters.replace("&", "");
-document.getElementById("uname").innerHTML=parameters.replace("%20", "   ");
-
-function whatsAppShare() { 
-var whatsappLink ="whatsapp://send?text=Click%20to%20receive%20the%20greeting%20from%20your%20well%20wisher%0A%0Ahttps%3A%2F%2Fbuffersoul.github.io/%3F"+parameters;
-  document.getElementById("whatsBtn").href = whatsappLink;
-
-} 
-
-</script>
-   <a href="https://www.hitwebcounter.com" target="_blank">
-        <img src="https://hitwebcounter.com/counter/counter.php?page=7281150&style=0009&nbdigits=5&type=page&initCount=0" title="User Stats" Alt="PHP Hits Count"   border="0" >
-      </a>
-  </body>
 </html>
