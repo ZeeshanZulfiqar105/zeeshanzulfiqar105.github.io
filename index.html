@@ -1,13 +1,64 @@
 <html>
 
 <head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
+  <!-- jQuery library -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+  <!-- Latest compiled JavaScript -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+
+
+
   <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
   <script type="text/javascript">
+
+
+async function fetchData() {
+      try {
+        const response = await axios.get('https://us-central1-nomadic-portal-422719-e0.cloudfunctions.net/waterPressureSensor?action=GET_WATER_LEVEL');
+        console.log(response.data);
+        // Use the fetched data here
+        return response.data; // Assuming the response has the water level value
+      } catch (error) {
+        console.error('There was an error!', error);
+      }
+    }
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     google.charts.load('current', { 'packages': ['gauge'] });
     google.charts.setOnLoadCallback(drawChart);
     let value = 0;
-    function drawChart() {
-      const REFRESH_INTERVAL=120000;
+     async function drawChart() {
+      
+      const REFRESH_INTERVAL = 120000;
       var data = google.visualization.arrayToDataTable([['Label', 'Value'], ['', 0]]);
       var options = {
         width: 200,
@@ -16,31 +67,58 @@
         redTo: 25,
         yellowFrom: 25,
         yellowTo: 75,
-        greenFrom:75,
-        greenTo:100,
-        majorTicks:["0","10","20","30","40","50","60","70","80","90","100"],
+        greenFrom: 75,
+        greenTo: 100,
+        majorTicks: ["0", "10", "20", "30", "40", "50", "60", "70", "80", "90", "100"],
         minorTicks: 10
       };
       var chart = new google.visualization.Gauge(document.getElementById('chart_div'));
       chart.draw(data, options);
-      setInterval(function () {
-        value++;
-        if (value === 100) value = 0;
-        data.setValue(0, 1, value);
+      setInterval(async function () {
+        const waterLevelResponse = await fetchData()
+       
+        data.setValue(0, 1, Math.round(waterLevelResponse?.waterLevel));
         chart.draw(data, options);
       }, REFRESH_INTERVAL);
     }     
   </script>
 </head>
 
-<body>
-  <div style="display: flex;
-  flex-direction: column;
-  align-items: center;">
-    <h3 style="margin-bottom: 0px;margin-top: 0px;">Water Tank Level</h3>
-  <div id="chart_div" style="margin-bottom: 0px;margin-top: 0px; width: 200px; height: 200px; ;border: 2px solid black;"></div>
+<body style="background-color: #f0f0f7;">
+
+
+
+  <div class="jumbotron text-center" style="background-color: rgb(64, 189, 230);padding: 0px;">
+    <h1 style="color: rgb(255, 255, 255); margin-top: 0px;margin-bottom: 0px;padding: 0px;">Dashboard</h1>
+    <!-- <p>Resize this responsive page to see the effect!</p> -->
   </div>
-  
+
+  <div class="container">
+    
+    <div class="row">
+      
+      <div class="col-sm-4">
+        <!-- <h4>Water Tank Level</h4> -->
+        <!-- <p>Lorem ipsum dolor..</p> -->
+        <div style="display: flex;flex-direction: column;align-items: center;">
+          <h3 style="margin-bottom: 0px;margin-top: 0px;">Water Tank Level</h3>
+          <div id="chart_div" style="width: 200px; height: 200px; ;border: 2px solid rgb(178, 175, 175);"></div>
+        </div>
+      </div>
+      
+      
+      <div class="col-sm-4">
+        <h3>Column 2</h3>
+        <p>Lorem ipsum dolor..</p>
+      </div>
+      
+      
+      <div class="col-sm-4">
+        <h3>Column 3</h3>
+        <p>Lorem ipsum dolor..</p>
+      </div>
+    </div>
+  </div>
 </body>
 
 </html>
