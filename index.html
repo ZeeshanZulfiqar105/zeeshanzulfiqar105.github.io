@@ -1,26 +1,65 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
   <meta charset="utf-8">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
   <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.slim.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-
-
-
-
   <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+  <style>
+    .card {
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      margin-bottom: 20px;
+    }
+
+    .card-body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* .chart-container {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    } */
+
+    .loader {
+      border: 16px solid #f3f3f3;
+      border-top: 16px solid #3498db;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      animation: spin 2s linear infinite;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      display: none;
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
+
   <script type="text/javascript">
-
-
     async function fetchData(url) {
       try {
         const response = await axios.get(url);
-        return response.data; // Assuming the response has the data you need
+        return response.data;
       } catch (error) {
         console.error('There was an error!', error);
       }
@@ -30,13 +69,15 @@
     google.charts.setOnLoadCallback(drawChart);
 
     async function drawChart() {
-      const REFRESH_INTERVAL = 120000;
+      const REFRESH_INTERVAL =120000;
+      const gaugeLoader = document.getElementById('gauge_loader');
+      const curveLoader = document.getElementById('curve_loader');
 
-      chartDataResponse = null
+      gaugeLoader.style.display = 'block';
+      curveLoader.style.display = 'block';
 
       let waterLevelResponse = await fetchData('https://us-central1-nomadic-portal-422719-e0.cloudfunctions.net/waterPressureSensor?action=GET_WATER_LEVEL');
-      chartDataResponse = await fetchData('https://us-central1-nomadic-portal-422719-e0.cloudfunctions.net/waterPressureSensor?action=getWaterTankChart');
-      chartDataResponse = parseChartData(chartDataResponse)
+      gaugeLoader.style.display = 'none';
 
       // Gauge chart setup
       var gaugeData = google.visualization.arrayToDataTable([
@@ -59,12 +100,18 @@
       gaugeChart.draw(gaugeData, gaugeOptions);
 
       setInterval(async function () {
+        gaugeLoader.style.display = 'block';
         waterLevelResponse = await fetchData('https://us-central1-nomadic-portal-422719-e0.cloudfunctions.net/waterPressureSensor?action=GET_WATER_LEVEL');
+        gaugeLoader.style.display = 'none';
         if (waterLevelResponse && waterLevelResponse.waterLevel !== undefined) {
           gaugeData.setValue(0, 1, Math.round(waterLevelResponse.waterLevel));
           gaugeChart.draw(gaugeData, gaugeOptions);
         }
       }, REFRESH_INTERVAL);
+
+      let chartDataResponse = await fetchData('https://us-central1-nomadic-portal-422719-e0.cloudfunctions.net/waterPressureSensor?action=getWaterTankChart');
+      curveLoader.style.display = 'none';
+      chartDataResponse = parseChartData(chartDataResponse)
 
       var lineChartData = google.visualization.arrayToDataTable(chartDataResponse);
 
@@ -72,14 +119,18 @@
         title: 'Water Level History',
         curveType: 'function',
         legend: { position: 'bottom' },
-        animation: { duration: 500 }
+        // backgroundColor:"#F5F9C6",
+        chartArea:{left:50,right:50,top:50,bottom:50}
+        // animation: { duration: 500 }
       };
 
       var lineChart = new google.visualization.LineChart(document.getElementById('curve_chart'));
       lineChart.draw(lineChartData, lineChartOptions);
 
       setInterval(async function () {
+        curveLoader.style.display = 'block';
         const chartDataResponse = await fetchData('https://us-central1-nomadic-portal-422719-e0.cloudfunctions.net/waterPressureSensor?action=getWaterTankChart');
+        curveLoader.style.display = 'none';
         if (chartDataResponse && Array.isArray(chartDataResponse)) {
           let finalChartData = [['Date', 'Level']];
           chartDataResponse.forEach(obj => {
@@ -91,88 +142,54 @@
       }, REFRESH_INTERVAL);
     }
 
-
     function parseChartData(data) {
-      let finalChartData = [['Date', 'Level']]
-      chartDataResponse.forEach(obj => {
-        finalChartData.push([obj.created_at.toString(), obj.value]);
+      let finalChartData = [['Date', 'Level']];
+      data.forEach(obj => {
+        finalChartData.push([milisecondsToDay(obj.created_at), obj.value]);
       });
-      return finalChartData
+      return finalChartData;
     }
 
-
+    function milisecondsToDay(milliseconds){
+      const date = new Date(milliseconds);
+      return date
+// return date.getDate();
+    }
   </script>
 
 </head>
 
 <body style="background-color: #f0f0f7;">
-  <style>
-    .card {
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      margin-bottom: 20px;
-    }
-
-    .card-body {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      /* height: 100%;
-      padding: none; */
-    }
-
-    /* #chart_div {
-      width: 100vm;
-      height: 100vm;
-    }
-    #curve_chart {
-      width: 100vm;
-      height: 100vm;
-    } */
-
-    .chart-container {
-      /* width: 100vm; */
-      /* height: 0; */
-      /* padding-bottom: 75%;  */
-      position: relative;
-    }
-  </style>
-
-
   <div class="jumbotron text-center" style="background-color: rgb(64, 189, 230);padding: 0px;">
     <h1 style="color: rgb(255, 255, 255); margin-top: 0px;margin-bottom: 0px;padding: 0px;">Dashboard</h1>
   </div>
 
-  <!-- ========================================================================== -->
-
   <div class="container">
     <div class="row">
-      <div class=".col-12 .col-md-4 col-lg-4 col-sm-12 ">
+      <div class=".col-12 .col-md-3 col-lg-3 col-sm-12 ">
         <div class="card">
           <div class="card-body">
             <h5 class="card-title">Water Tank Level</h5>
-            <div class="chart-container">
+            <div class="chart-container" style="border: 1px solid rgb(234, 231, 228);">
+              <div class="loader" id="gauge_loader"></div>
               <div id="chart_div"></div>
             </div>
-
           </div>
         </div>
       </div>
-      <div class=".col-12 .col-md-8 col-lg-8  col-sm-12">
+      <div class=".col-12 .col-md-9 col-lg-9  col-sm-12">
         <div class="card">
           <div class="card-body">
             <h5 class="card-title">Last Week Stats</h5>
-            <div class="chart-container" style="width: 100%;">
+            <div class="chart-container" style="width: 100%;border: 1px solid rgb(234, 231, 228);">
+              <div class="loader" id="curve_loader"></div>
               <div id="curve_chart"></div>
             </div>
-
           </div>
         </div>
       </div>
     </div>
   </div>
-
-  <!-- =========================================== -->
 </body>
 
 </html>
