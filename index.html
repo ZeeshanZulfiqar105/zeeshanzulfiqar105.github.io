@@ -2,144 +2,151 @@
 <html lang="en">
 
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta charset="utf-8">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.slim.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
-  <style>
-    #guage_loader, #chart_loader {
-      display: none;
-    }
-  </style>
+    <style>
+        #guage_loader,
+        #chart_loader {
+            display: none;
+        }
+    </style>
 
 </head>
 
-  <script type="text/javascript">
+<script type="text/javascript">
 
     async function fetchData(url) {
-      try {
-        const response = await axios.get(url);
-        return response.data;
-      } catch (error) {
-        console.error('There was an error!', error);
-      }
+        try {
+            const response = await axios.get(url);
+            return response.data;
+        } catch (error) {
+            console.error('There was an error!', error);
+        }
     }
 
     google.charts.load('current', { 'packages': ['gauge', 'corechart'] });
     google.charts.setOnLoadCallback(drawChart);
-    
+
     async function drawChart() {
-      var guage_loader = document.getElementById("guage_loader");
-      var chart_loader = document.getElementById("chart_loader");
-      guage_loader.style.display = "block";
-      chart_loader.style.display = "block";
+        var guage_loader = document.getElementById("guage_loader");
+        var chart_loader = document.getElementById("chart_loader");
+        guage_loader.style.display = "block";
+        chart_loader.style.display = "block";
 
-      const REFRESH_INTERVAL = 600000;
+        const REFRESH_INTERVAL = 600000;
 
-      let waterLevelResponse = await fetchData('https://us-central1-nomadic-portal-422719-e0.cloudfunctions.net/waterPressureSensor?action=GET_WATER_LEVEL');
+        let waterLevelResponse = await fetchData('https://us-central1-nomadic-portal-422719-e0.cloudfunctions.net/waterPressureSensor?action=GET_WATER_LEVEL');
 
-      var gaugeData = google.visualization.arrayToDataTable([['Label', 'Value'], ['', waterLevelResponse.waterLevel]]);
-      var gaugeOptions = {
-        width: 200,
-        height: 200,
-        redFrom: 0,
-        redTo: 25,
-        yellowFrom: 25,
-        yellowTo: 75,
-        greenFrom: 75,
-        greenTo: 100,
-        majorTicks: ["0", "10", "20", "30", "40", "50", "60", "70", "80", "90", "100"],
-        minorTicks: 10
-      };
-      var gaugeChart = new google.visualization.Gauge(document.getElementById('gauge_div'));
-      gaugeChart.draw(gaugeData, gaugeOptions);
-      
-      guage_loader.style.display = "none";
-      setInterval(async function () {
+        const level = `${waterLevelResponse.waterLevel.toFixed(1)}`
 
-        waterLevelResponse = await fetchData('https://us-central1-nomadic-portal-422719-e0.cloudfunctions.net/waterPressureSensor?action=GET_WATER_LEVEL');
+        waterLevelResponse.waterLevel = Number(level)
+        var gaugeData = google.visualization.arrayToDataTable([['Label', 'Value'], ['', Number(waterLevelResponse.waterLevel.toFixed(1))]]);
+        var gaugeOptions = {
+            width: 200,
+            height: 200,
+            redFrom: 0,
+            redTo: 25,
+            yellowFrom: 25,
+            yellowTo: 75,
+            greenFrom: 75,
+            greenTo: 100,
+            majorTicks: ["0", "10", "20", "30", "40", "50", "60", "70", "80", "90", "100"],
+            minorTicks: 10
+        };
+        var gaugeChart = new google.visualization.Gauge(document.getElementById('gauge_div'));
+        gaugeChart.draw(gaugeData, gaugeOptions);
 
-        if (waterLevelResponse && waterLevelResponse.waterLevel !== undefined) {
-          gaugeData.setValue(0, 1, Math.round(waterLevelResponse.waterLevel));
-          gaugeChart.draw(gaugeData, gaugeOptions);
-        }
-      }, REFRESH_INTERVAL);
+        guage_loader.style.display = "none";
+        setInterval(async function () {
 
-      let chartDataResponse = await fetchData('https://us-central1-nomadic-portal-422719-e0.cloudfunctions.net/waterPressureSensor?action=getWaterTankChart');
+            waterLevelResponse = await fetchData('https://us-central1-nomadic-portal-422719-e0.cloudfunctions.net/waterPressureSensor?action=GET_WATER_LEVEL');
 
-      chartDataResponse = parseChartData(chartDataResponse)
+            if (waterLevelResponse && waterLevelResponse.waterLevel !== undefined) {
+                gaugeData.setValue(0, 1, Number(waterLevelResponse.waterLevel.toFixed(1)));
+                gaugeChart.draw(gaugeData, gaugeOptions);
+            }
+        }, REFRESH_INTERVAL);
 
-      var lineChartData = google.visualization.arrayToDataTable(chartDataResponse);
+        let chartDataResponse = await fetchData('https://us-central1-nomadic-portal-422719-e0.cloudfunctions.net/waterPressureSensor?action=getWaterTankChart');
 
-      var lineChartOptions = {
-        title: 'Water Level History',
-        curveType: 'function',
-        legend: { position: 'bottom' },
+        chartDataResponse = parseChartData(chartDataResponse)
 
-        chartArea: { left: 30, right: 0, top: 30, bottom: 70 }
+        var lineChartData = google.visualization.arrayToDataTable(chartDataResponse);
 
-      };
+        var lineChartOptions = {
+            title: 'Water Level History',
+            curveType: 'function',
+            legend: { position: 'bottom' },
 
-      var lineChart = new google.visualization.LineChart(document.getElementById('curve_chart'));
-      lineChart.draw(lineChartData, lineChartOptions);
-      chart_loader.style.display = "none";
+            chartArea: { left: 30, right: 0, top: 30, bottom: 70 }
+
+        };
+
+        var lineChart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+        lineChart.draw(lineChartData, lineChartOptions);
+        chart_loader.style.display = "none";
     }
 
     function parseChartData(data) {
         // console.log("======",data)
-      let finalChartData = [['Date', 'Level']];
-      data.forEach(obj => {
-        finalChartData.push([milisecondsToDay(obj.created_at), obj.value]);
-      });
-      return finalChartData;
+        let finalChartData = [['Date', 'Level']];
+        data.forEach(obj => {
+            finalChartData.push([milisecondsToDay(obj.created_at), obj.value]);
+        });
+        return finalChartData;
     }
 
     function milisecondsToDay(milliseconds) {
-      const date = new Date(milliseconds);
-      date.setHours(date.getUTCHours() + 5);
-      let hours = date.getHours();
-      const minutes = date.getMinutes();
-      const seconds = date.getSeconds();
-      const ampm = hours >= 12 ? 'PM' : 'AM';
-      hours = hours % 12;
-      hours = hours ? hours : 12;
-      const timeString = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')} ${ampm}`;
-      splitedTime = timeString.split(":")
-    //   console.log(timeString.split(":"))
-      let splitedHours = splitedTime[0] > 9 ? splitedTime[0] : splitedTime[0][1]
-      let splitedMinutes = splitedTime[1]
-      let amPm = splitedTime[2].split(" ")[0]
-      return `${splitedHours}:${splitedMinutes} ${ampm}`
+        const date = new Date(milliseconds);
+        date.setHours(date.getUTCHours() + 5);
+        let hours = date.getHours();
+        const minutes = date.getMinutes();
+        const seconds = date.getSeconds();
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        hours = hours % 12;
+        hours = hours ? hours : 12;
+        const timeString = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')} ${ampm}`;
+        splitedTime = timeString.split(":")
+        //   console.log(timeString.split(":"))
+        let splitedHours = splitedTime[0] > 9 ? splitedTime[0] : splitedTime[0][1]
+        let splitedMinutes = splitedTime[1]
+        let amPm = splitedTime[2].split(" ")[0]
+        return `${splitedHours}:${splitedMinutes} ${ampm}`
     }
-  </script>
+</script>
 
 
 <body style="background-color: #ffffff;">
-  <div class="jumbotron text-center" style="background-color: rgb(64, 189, 230);padding: 0px;">
-    <h1 style="color: rgb(255, 255, 255); margin-top: 0px;margin-bottom: 0px;padding: 0px;">Dashboard</h1>
-  </div>
-  <!-- ============================================================================ -->
-  <div class="container mt-4">
-    <div class="row">
-      <div class="col-lg-3 col-md-4 col-sm-12 mb-4">
-        <div class="p-3 border rounded shadow-sm" style="border: 1px solid rgb(180, 178, 176);">
-          <img id="guage_loader" src="loader.gif" width="100%">
-          <div id="gauge_div" class="d-flex justify-content-center align-items-center" style="height: 100%;"></div>
-        </div>
-      </div>
-      <div class="col-lg-9 col-md-8 col-sm-12 mb-4">
-        <div class="p-3 border rounded shadow-sm" style="border: 1px solid rgb(180, 178, 176);">
-          <img id="chart_loader" src="loader.gif"  width="10%">
-          <div id="curve_chart" class="d-flex justify-content-center align-items-center" style="height: 100%; width: 100%;"></div>
-        </div>
-      </div>
+    <div class="jumbotron text-center" style="background-color: rgb(64, 189, 230);padding: 0px;">
+        <h1 style="color: rgb(255, 255, 255); margin-top: 0px;margin-bottom: 0px;padding: 0px;">Dashboard</h1>
     </div>
-  </div>
-  <!-- ============================================================= -->
+    <!-- ============================================================================ -->
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-lg-3 col-md-4 col-sm-12 mb-4">
+                <div class="p-3 border rounded shadow-sm" style="border: 1px solid rgb(180, 178, 176);">
+                    <img id="guage_loader" src="loader.gif" width="100%">
+                    <div id="gauge_div" class="d-flex justify-content-center align-items-center" style="height: 100%;">
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-9 col-md-8 col-sm-12 mb-4">
+                <div class="p-3 border rounded shadow-sm" style="border: 1px solid rgb(180, 178, 176);">
+                    <img id="chart_loader" src="loader.gif" width="10%">
+                    <div id="curve_chart" class="d-flex justify-content-center align-items-center"
+                        style="height: 100%; width: 100%;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ============================================================= -->
 </body>
+
 </html>
