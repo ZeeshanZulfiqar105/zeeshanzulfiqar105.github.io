@@ -39,7 +39,7 @@
       guage_loader.style.display = "block";
       chart_loader.style.display = "block";
 
-      const REFRESH_INTERVAL = 300000;
+      const REFRESH_INTERVAL = 600000;
 
       let waterLevelResponse = await fetchData('https://us-central1-nomadic-portal-422719-e0.cloudfunctions.net/waterPressureSensor?action=GET_WATER_LEVEL');
 
@@ -81,7 +81,7 @@
         curveType: 'function',
         legend: { position: 'bottom' },
 
-        chartArea: { left: 50, right: 50, top: 50, bottom: 50 }
+        chartArea: { left: 30, right: 0, top: 30, bottom: 70 }
 
       };
 
@@ -91,6 +91,7 @@
     }
 
     function parseChartData(data) {
+        // console.log("======",data)
       let finalChartData = [['Date', 'Level']];
       data.forEach(obj => {
         finalChartData.push([milisecondsToDay(obj.created_at), obj.value]);
@@ -109,7 +110,7 @@
       hours = hours ? hours : 12;
       const timeString = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')} ${ampm}`;
       splitedTime = timeString.split(":")
-      console.log(timeString.split(":"))
+    //   console.log(timeString.split(":"))
       let splitedHours = splitedTime[0] > 9 ? splitedTime[0] : splitedTime[0][1]
       let splitedMinutes = splitedTime[1]
       let amPm = splitedTime[2].split(" ")[0]
