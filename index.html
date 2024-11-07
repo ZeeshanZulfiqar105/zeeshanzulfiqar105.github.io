@@ -84,27 +84,69 @@
         var lineChartData = google.visualization.arrayToDataTable(chartDataResponse);
 
         var lineChartOptions = {
-            title: 'Water Level History',
+            title: `Water Level History (${new Date(currentWaterLevelCreatedAt).toISOString().split("T")[0]} ${milisecondsToDay(currentWaterLevelCreatedAt)})`,
             curveType: 'function',
             legend: { position: 'bottom' },
-
+            hAxis: {
+                // title: 'Date Axis Title', 
+              format: 'hh:mm',            // Format of date labels ('MMM yyyy', 'MM/dd/yy', etc.)
+              // gridlines: { 
+              //   color: '#e9e9e9',               // Color of gridlines (or use 'none' to hide)
+              //   count: 10                       // Number of gridlines; set to -1 for automatic
+              // },
+              // minorGridlines: {                 // Minor gridlines for more detail
+              //   count: 5                        // Number of minor gridlines (depends on main gridlines)
+              // },
+              slantedText: true,                // Slant text at a 45-degree angle
+              // slantedTextAngle: 45,             // Custom angle (0-90) for label slant
+              // maxAlternation: 2,                // Limit alternating label display for readability
+              // showTextEvery: 1,                 // Show every nth label; use for spaced dates
+              viewWindow: {
+                // min: new Date(currentWaterLevelCreatedAt),      // Start date for the visible window
+                // max: new Date(currentWaterLevelCreatedAt)     // End date for the visible window
+              },
+            viewWindowMode: 'pretty',
+        },
+        animation: {
+    startup: true,
+    duration: 1000,
+    easing: 'out',
+  },
+  explorer: {
+    actions: ['dragToZoom', 'rightClickToReset'],
+    axis: 'horizontal',
+    keepInBounds: true,
+    maxZoomIn: 0.1
+  },
             chartArea: { left: 50, right: 50, top: 50, bottom: 50 }
-
         };
+
+
+        // lineChartOptions.hAxis.viewWindow.min=new Date(chartDataResponse[chartDataResponse.length-1][0])
+        lineChartOptions.hAxis.viewWindow.min=new Date(Date.now()-43200000)
+        lineChartOptions.hAxis.viewWindow.max=new Date(currentWaterLevelCreatedAt)
 
         var lineChart = new google.visualization.LineChart(document.getElementById('curve_chart'));
         lineChart.draw(lineChartData, lineChartOptions);
         chart_loader.style.display = "none";
     }
 
+
+
     function parseChartData(data) {
         // console.log("======",data)
         let finalChartData = [['Date', 'Level']];
 
-        finalChartData.push([milisecondsToDay(currentWaterLevelCreatedAt), Number(currentWaterLevel)])
-        data.forEach(obj => {
-            finalChartData.push([milisecondsToDay(obj.created_at), obj.value]);
-        });
+        finalChartData.push([new Date(currentWaterLevelCreatedAt), Number(currentWaterLevel)])
+        // data.forEach(obj => {
+        //     finalChartData.push([milisecondsToDay(obj.created_at), obj.value]);
+        // });
+
+        data.map((obj,index)=>{
+if(index<=50){
+    finalChartData.push([new Date(obj.created_at), obj.value]);
+}
+        })
         return finalChartData;
     }
 
@@ -124,6 +166,7 @@
         let splitedMinutes = splitedTime[1]
         let amPm = splitedTime[2].split(" ")[0]
         return `${splitedHours}:${splitedMinutes} ${ampm}`
+        // return date
     }
 </script>
 
