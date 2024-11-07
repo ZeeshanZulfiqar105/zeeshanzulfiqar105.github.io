@@ -45,7 +45,7 @@
 
         let waterLevelResponse = await fetchData('https://us-central1-nomadic-portal-422719-e0.cloudfunctions.net/waterPressureSensor?action=GET_WATER_LEVEL');
         currentWaterLevel = waterLevelResponse?.waterLevel.toFixed(1);
-        currentWaterLevelCreatedAt =  waterLevelResponse?.last_level_value_added_at
+        currentWaterLevelCreatedAt =  waterLevelResponse?.created_at
         const level = `${waterLevelResponse.waterLevel.toFixed(1)}`
 
         waterLevelResponse.waterLevel = Number(level)
@@ -70,7 +70,7 @@
 
             waterLevelResponse = await fetchData('https://us-central1-nomadic-portal-422719-e0.cloudfunctions.net/waterPressureSensor?action=GET_WATER_LEVEL');
             currentWaterLevel = waterLevelResponse?.waterLevel.toFixed(1);
-            currentWaterLevelCreatedAt =  waterLevelResponse?.last_level_value_added_at
+            currentWaterLevelCreatedAt =  waterLevelResponse?.created_at
             if (waterLevelResponse && waterLevelResponse.waterLevel !== undefined) {
                 gaugeData.setValue(0, 1, Number(waterLevelResponse.waterLevel.toFixed(1)));
                 gaugeChart.draw(gaugeData, gaugeOptions);
@@ -101,7 +101,7 @@
         // console.log("======",data)
         let finalChartData = [['Date', 'Level']];
 
-        finalChartData.push([milisecondsToDay(currentWaterLevelCreatedAt), currentWaterLevel])
+        finalChartData.push([milisecondsToDay(currentWaterLevelCreatedAt), Number(currentWaterLevel)])
         data.forEach(obj => {
             finalChartData.push([milisecondsToDay(obj.created_at), obj.value]);
         });
