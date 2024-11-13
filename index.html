@@ -79,13 +79,12 @@
 
         let chartDataResponse = await fetchData('https://us-central1-nomadic-portal-422719-e0.cloudfunctions.net/waterPressureSensor?action=getWaterTankChart');
 
+        const date = new Date(chartDataResponse[0].created_at);
         chartDataResponse = parseChartData(chartDataResponse)
 
         var lineChartData = google.visualization.arrayToDataTable(chartDataResponse);
 
-        const date = new Date(1731150840000);
         const formattedDate = `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${date.getFullYear()}`;
-
 
         var lineChartOptions = {
             title: `Level History (${formattedDate} ${milisecondsToDay(currentWaterLevelCreatedAt)})`,
